@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palmetto TSA Shop</title>
+    <style>
+        :root {
+            --primary-color: #A32638; /* Palmetto High School Red/Maroon */
+            --secondary-color: #000000; /* School Black Accent */
+            --light-bg: #f9f9f9;
+            --white: #ffffff;
+            --text-dark: #333333;
+            --accent-color: #27ae60;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 5px solid var(--secondary-color);
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: flex;
+            gap: 2rem;
+        }
+
+        /* Filter Section */
+        .controls {
+            flex: 0 0 250px;
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            height: fit-content;
+        }
+
+        .controls h3 {
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .filter-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border: none;
+            background: #f0f0f0;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        /* Shop Section */
+        .shop-main {
+            flex: 1;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-img-container {
+            width: 100%;
+            height: 200px;
+            background: #eaeaea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .product-info {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            background: #fff5f6;
+            padding: 0.5rem;
+            border-radius: 4px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .price-box {
+            font-size: 0.9rem;
+        }
+
+        .price-val {
+            font-weight: bold;
+            color: #d32f2f;
+            font-size: 1.05rem;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--secondary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+            margin-top: auto;
+        }
+
+        .add-btn:hover {
+            background-color: var(--primary-color);
+        }
+
+        /* Cart Sidebar */
+        .cart-panel {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            flex: 0 0 300px;
+            height: fit-content;
+        }
+
+        .cart-panel h3 {
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .cart-items {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #ff3333;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .payment-toggle {
+            margin: 1rem 0;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            background: #fff;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .toggle-btn.active {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+
+        .cart-total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 1rem 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--accent-color);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .checkout-btn:hover {
+            background-color: #219653;
+        }
+
+        .payment-info-box {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: #eef9ff;
+            border: 1px solid #bce5ff;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            .controls, .cart-panel {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Palmetto TSA Shop</h1>
+    <p>Proudly Supporting Palmetto High School Technology Student Association — Tigers Pride!</p>
+</header>
+
+<div class="container">
+    <!-- Filter Menu -->
+    <aside class="controls">
+        <h3>Categories</h3>
+        <button class="filter-btn active" onclick="filterCategory('all', this)">All Items</button>
+        <button class="filter-btn" onclick="filterCategory('fidgets', this)">Fidgets & Toys</button>
+        <button class="filter-btn" onclick="filterCategory('keychains', this)">Keychains & Tags</button>
+        <button class="filter-btn" onclick="filterCategory('decor', this)">Decor & Household</button>
+        <button class="filter-btn" onclick="filterCategory('vehicles', this)">Vehicles & Models</button>
+    </aside>
+
+    <!-- Main Products Area -->
+    <main class="shop-main">
+        <div class="products-grid" id="products-grid">
+            <!-- Dynamic Injection via JavaScript -->
+        </div>
+    </main>
+
+    <!-- Shopping Cart Panel -->
+    <aside class="cart-panel">
+        <h3>Your Cart</h3>
+        <div class="cart-items" id="cart-items">
+            <p style="color:#777; font-style:italic;">Your cart is empty.</p>
+        </div>
+        
+        <div class="payment-toggle">
+            <button class="toggle-btn active" id="btn-cash" onclick="setPaymentMode('cash')">Cash Price</button>
+            <button class="toggle-btn" id="btn-cashapp" onclick="setPaymentMode('cashapp')">CashApp Price</button>
+        </div>
+
+        <div class="cart-total">
+            <span>Total:</span>
+            <span id="cart-total-val">$0.00</span>
+        </div>
+
+        <!-- LIVE GATEWAY INTEGRATION POINT -->
+        <!-- Replace href link below with your Square Checkout Link or Stripe Payment Link -->
+        <a id="checkout-link" href="https://checkout.square.site/merchant/YOUR_MERCHANT_ID/checkout/YOUR_LINK_ID" target="_blank" style="text-decoration: none;">
+            <button class="checkout-btn">Proceed to Checkout</button>
+        </a>
+
+        <div class="payment-info-box">
+            <strong>Payment Setup:</strong> Currently using digital rates via web checkout. Update the button URL link in the HTML file code to wire up your live <strong>Stripe Payment Link</strong> or <strong>Square Checkout Page</strong>.
+        </div>
+    </aside>
+</div>
+
+<script>
+    // Product Database containing your original items + added creative additions
+    const products = [
+        { id: 1, name: "Big Piggy Bank (No Opening)", cashPrice: 7.50, cashappPrice: 8.00, cat: "decor", img: "" },
+        { id: 2, name: "Piggy Bank (With Opening)", cashPrice: 4.00, cashappPrice: 5.00, cat: "decor", img: "" },
+        { id: 3, name: "Semi Medium Realistic Frog", cashPrice: 5.00, cashappPrice: 6.00, cat: "decor", img: "" },
+        { id: 4, name: "Phone Stand", cashPrice: 3.00, cashappPrice: 4.00, cat: "decor", img: "" },
+        { id: 5, name: "Squashed Rat Bookmark", cashPrice: 3.00, cashappPrice: 3.50, cat: "decor", img: "" },
+        { id: 6, name: "Squirtle Pokemon Figure", cashPrice: 3.00, cashappPrice: 3.00, cat: "decor", img: "" },
+        { id: 7, name: "Infinity Cube", cashPrice: 3.50, cashappPrice: 3.50, cat: "fidgets", img: "" },
+        { id: 8, name: "Octopus Fidget", cashPrice: 3.50, cashappPrice: 4.00, cat: "fidgets", img: "" },
+        { id: 9, name: "Flex Tiger Shark", cashPrice: 4.00, cashappPrice: 4.50, cat: "fidgets", img: "" },
+        { id: 10, name: "Tiger Keychain", cashPrice: 3.00, cashappPrice: 4.00, cat: "keychains", img: "" },
+        { id: 11, name: "Blue Whale Model", cashPrice: 3.50, cashappPrice: 4.50, cat: "decor", img: "" },
+        { id: 12, name: "Raptor Dinosaur", cashPrice: 3.50, cashappPrice: 4.00, cat: "fidgets", img: "" },
+        { id: 13, name: "Pterodactyl", cashPrice: 3.50, cashappPrice: 4.15, cat: "fidgets", img: "" },
+        { id: 14, name: "Star Fidget", cashPrice: 3.50, cashappPrice: 4.00, cat: "fidgets", img: "" },
+        { id: 15, name: "12-in-1 Fidget Toy", cashPrice: 4.00, cashappPrice: 4.85, cat: "fidgets", img: "" },
+        { id: 16, name: "Paw Print Tag", cashPrice: 3.50, cashappPrice: 4.00, cat: "keychains", img: "" },
+        { id: 17, name: "Gecko Keychain", cashPrice: 3.50, cashappPrice: 4.00, cat: "keychains", img: "" },
+        { id: 18, name: "F1 Car (Small)", cashPrice: 5.00, cashappPrice: 5.50, cat: "vehicles", img: "" },
+        { id: 19, name: "F1 Car (Bigger)", cashPrice: 12.00, cashappPrice: 13.00, cat: "vehicles", img: "" },
+        
+        // Expanded 3D printed inventory additions
+        { id: 20, name: "Articulated Crystal Dragon", cashPrice: 6.00, cashappPrice: 7.00, cat: "fidgets", img: "" },
+        { id: 21, name: "Palmetto Tigers Logo Keychain", cashPrice: 2.50, cashappPrice: 3.00, cat: "keychains", img: "" },
+        { id: 22, name: "Collapsible Pirate Sword", cashPrice: 5.50, cashappPrice: 6.50, cat: "fidgets", img: "" },
+        { id: 23, name: "Desktop Pen & Tool Organizer", cashPrice: 5.00, cashappPrice: 6.00, cat: "decor", img: "" },
+        { id: 24, name: "Low-Poly Cute Succulent Pot", cashPrice: 4.50, cashappPrice: 5.25, cat: "decor", img: "" },
+        { id: 25, name: "Cyberpunk Cyber-Truck Model", cashPrice: 4.00, cashappPrice: 4.75, cat: "vehicles", img: "" }
+    ];
+
+    let cart = [];
+    let currentPaymentMode = 'cash'; // Default to cash rates
+
+    // Render products to grid
+    function renderProducts(items) {
+        const grid = document.getElementById('products-grid');
+        grid.innerHTML = '';
+        
+        items.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            
+            // Image fallback cleaner view
+            const imgSrc = p.img ? p.img : 'placeholder.jpg'; 
+            
+            card.innerHTML = `
+                <div class="product-img-container">
+                    ${p.img ? `<img src="${p.img}" class="product-img" alt="${p.name}">` : `<span>[ Place Image: ${p.name.toLowerCase().replace(/ /g, '_')}.jpg ]</span>`}
+                </div>
+                <div class="product-info">
+                    <div class="product-title">${p.name}</div>
+                    <div class="price-row">
+                        <div class="price-box">Cash: <span class="price-val">$${p.cashPrice.toFixed(2)}</span></div>
+                        <div class="price-box">CashApp: <span class="price-val">$${p.cashappPrice.toFixed(2)}</span></div>
+                    </div>
+                    <button class="add-btn" onclick="addToCart(${p.id})">Add to Cart</button>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    // Filter Items by category
+    function filterCategory(category, buttonElement) {
+        // Toggle Active Classes on Filter Menu
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        buttonElement.classList.add('active');
+
+        if(category === 'all') {
+            renderProducts(products);
+        } else {
+            const filtered = products.filter(p => p.cat === category);
+            renderProducts(filtered);
+        }
+    }
+
+    // Cart Management functions
+    function addToCart(id) {
+        const product = products.find(p => p.id === id);
+        const cartItem = cart.find(item => item.id === id);
+        
+        if (cartItem) {
+            cartItem.qty += 1;
+        } else {
+            cart.push({ ...product, qty: 1 });
+        }
+        updateCartUI();
+    }
+
+    function removeFromCart(id) {
+        cart = cart.filter(item => item.id !== id);
+        updateCartUI();
+    }
+
+    function setPaymentMode(mode) {
+        currentPaymentMode = mode;
+        document.getElementById('btn-cash').classList.toggle('active', mode === 'cash');
+        document.getElementById('btn-cashapp').classList.toggle('active', mode === 'cashapp');
+        updateCartUI();
+    }
+
+    function updateCartUI() {
+        const cartContainer = document.getElementById('cart-items');
+        const totalContainer = document.getElementById('cart-total-val');
+        
+        if (cart.length === 0) {
+            cartContainer.innerHTML = '<p style="color:#777; font-style:italic;">Your cart is empty.</p>';
+            totalContainer.innerText = '$0.00';
+            return;
+        }
+        
+        cartContainer.innerHTML = '';
+        let grandTotal = 0;
+        
+        cart.forEach(item => {
+            const price = currentPaymentMode === 'cash' ? item.cashPrice : item.cashappPrice;
+            const itemTotal = price * item.qty;
+            grandTotal += itemTotal;
+            
+            const div = document.createElement('div');
+            div.className = 'cart-item';
+            div.innerHTML = `
+                <div>
+                    <strong>${item.name}</strong> <br>
+                    <small>Qty: ${item.qty} x $${price.toFixed(2)}</small>
+                </div>
+                <div>
+                    <span>$${itemTotal.toFixed(2)}</span>
+                    <button class="remove-btn" onclick="removeFromCart(${item.id})">✖</button>
+                </div>
+            `;
+            cartContainer.appendChild(div);
+        });
+        
+        totalContainer.innerText = `$${grandTotal.toFixed(2)}`;
+    }
+
+    // Initial Load execution
+    renderProducts(products);
+</script>
+</body>
+</html>
